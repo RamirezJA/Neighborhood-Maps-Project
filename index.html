@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<!-- CSS -->
+  	<link rel="stylesheet" href="css/styles.css">
+    <title>Neighborhood Map</title>
+  </head>
+<!-- Need to add to index: Navbar with search box using google auto complete, knockout.js,container,footer, src = google api ??maybe yelp and foursquare -->
+<!-- Need to add whole: locations, js, css  -->
+<body>
+<nav class="navbar-fixed-top navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <h1 class="navbar-name">Altamed Clinics Map</h1>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group input-group">
+
+          <input type="search" class="form-control" data-bind="textInput: loclist, valueUpdate: 'keyup'" autocomplete="off" placeholder="Search ...">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+<!-- Filter list wit knockout bindings -->
+<div class="panel-group" id="p1">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1">Altamed locations list</a>
+        </h2>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <ul data-bind="foreach:regionlist">
+          <li>
+                <strong data-bind="text: marker.title, click: $parent.show"></strong>
+              </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<!-- NYT button and panel -->
+  <div class="panel-group" id="p2">
+  <div class="panel panel-default">
+  <div class="nytimes-container">
+    <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">NYT articles of LA</button>
+
+        <div id="demo" class="panel-collapse collapse">
+        <ul id="nytimes-articles" class="article-list"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Map -->
+<div class="container-fluid">
+  <div class="row">
+    <div id="map">
+     </div>
+   </div>
+ </div>
+
+<!-- yahoo weather api -->
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3" id="boxed">
+      <div id="yahoo"></div>
+        <a href="https://www.yahoo.com/?ilc=401" target="_blank"> <img class="one" src="https://poweredby.yahoo.com/purple.png" alt="yahoo" width="134" height="29"/> </a>
+    </div>
+  </div>
+</div>
+<!-- attributions -->
+<footer class="footer">
+  <div class="container">
+    <a onerror="weatherNotFound()" href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/white.png" alt="yahoo" width="134" height="29"/> </a>
+    <a href="http://developer.nytimes.com" > <img src="img/poweredby_nytimes_200c.png" alt="New York Times"></a>
+  </div>
+</footer>
+
+ <!-- Knockout.js -->
+ <script src='js/knockout-3.4.2.js'></script>
+ <!-- js -->
+ <script src="js/map.js"></script>
+
+ <!-- key -->
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyBqX5J5dAo-I-p3LP_EaCF0-sZtFVoDFiI&v=3&callback=initMap" onerror="mapNotFound()">
+    </script>
+
+</body>
+
+</html>
