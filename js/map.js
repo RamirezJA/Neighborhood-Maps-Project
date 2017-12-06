@@ -279,7 +279,6 @@ var ViewModel = function() {
             spot.marker.infowindow.close();
           }
           return search;
-
           });
       });
 
@@ -289,7 +288,6 @@ var ViewModel = function() {
         self.site()[i].marker.setAnimation(null);
       }
       self.populateInfoWindow(chosen.marker, largeInfowindow);
-
     };
     // This function populates the infowindow when the marker is clicked. We'll only allow
       // one infowindow which will open at the marker that is clicked, and populate based
