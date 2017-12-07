@@ -190,13 +190,16 @@ var ViewModel = function() {
 
       //yahoo api
       $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='la, ca') &format=json").success(function(data){
-   console.log(data);
+   console.log(data);.fail(function(e){
+        alert('Yahoo weather could Not Be Loaded');
+    });
    $('#yahoo').html("Temperature in Los Angeles "+data.query.results.channel.item.condition.temp + "°F");
   });
       //NyTimes Api
       function loadData() {
 
     var $nytElem = $('#nytimes-articles');
+    var $nytHeaderElem = $('#nytimes-header');
 
     // clear out old data before new request
     $nytElem.text("");
@@ -206,6 +209,8 @@ var ViewModel = function() {
 
     // load nytimes
     $.getJSON(nytimesUrl, function(data){
+
+      $nytHeaderElem.text('New York Times articles about LA');
 
         articles = data.response.docs;
         for (var i = 0; i < articles.length; i++) {
@@ -217,7 +222,7 @@ var ViewModel = function() {
                 '<p>' + article.snippet + '</p>'+
             '</li>');
         }
-    }).error(function(e){
+    }).fail(function(e){
         $nytHeaderElem.text('New York Times Articles could Not Be Loaded');
     });
   }
@@ -244,6 +249,9 @@ var ViewModel = function() {
           // Create an onclick event to open an infowindow at each marker.
           marker.addListener('click', function() {
             self.populateInfoWindow(this, largeInfowindow);
+            this.setAnimation(google.maps.Animation.BOUNCE);
+            var y = this;
+            setTimeout(function(){ y.setAnimation(null); }, 1200);
           });
 
           // Two event listeners - one for mouseover, one for mouseout,
@@ -255,18 +263,7 @@ var ViewModel = function() {
             this.setIcon(defaultIcon);
           });
 
-          //Bounce marker on Click
-         marker.addListener('click', toggleBounce);
 
-          function toggleBounce() {
-            if (this.getAnimation() !== null) {
-              this.setAnimation(null);
-          } else {
-            this.setAnimation(google.maps.Animation.BOUNCE);
-            var y = this;
-            setTimeout(function(){ y.setAnimation(null); }, 1200);
-            }
-          }
         }
         //The altamed location list filter
         self.regionlist = ko.computed(function() {
@@ -279,6 +276,7 @@ var ViewModel = function() {
             spot.marker.infowindow.close();
           }
           return search;
+
           });
       });
 
@@ -288,6 +286,7 @@ var ViewModel = function() {
         self.site()[i].marker.setAnimation(null);
       }
       self.populateInfoWindow(chosen.marker, largeInfowindow);
+
     };
     // This function populates the infowindow when the marker is clicked. We'll only allow
       // one infowindow which will open at the marker that is clicked, and populate based
@@ -354,8 +353,4 @@ var ViewModel = function() {
 //Map not found for Google maps Api
 function mapNotFound() {
   alert('Google map did not load. We are sorry for the inconvenience.');
-}
-//Yahoo weather Api error
-function weatherNotFound() {
-  alert('Yahoo weather did not load.We are sorry for the inconvenience.');
 }
