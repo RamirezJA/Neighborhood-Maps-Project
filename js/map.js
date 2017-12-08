@@ -179,6 +179,10 @@ var ViewModel = function() {
 
     self.loclist = ko.observable('');
 
+    self.yahoo = ko.observable()
+
+
+
     //infowindow
     var largeInfowindow = new google.maps.InfoWindow();
       // Style the markers a bit. This will be our listing marker icon.
@@ -189,11 +193,9 @@ var ViewModel = function() {
 
 
       //yahoo api
-      $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='la, ca') &format=json").success(function(data){
-   console.log(data);.fail(function(e){
-        alert('Yahoo weather could Not Be Loaded');
-    });
-   $('#yahoo').html("Temperature in Los Angeles "+data.query.results.channel.item.condition.temp + "°F");
+      $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='la, ca') &format=json", function(data){
+
+   self.yahoo("Temperature in Los Angeles "+data.query.results.channel.item.condition.temp + "°F");
   });
       //NyTimes Api
       function loadData() {
