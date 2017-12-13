@@ -4,17 +4,37 @@ var map;
 // The model
 // The locations are free Altamed Clinics in East LA
 var locations = [
-    {title: 'AltaMed Medical Group - Commerce', location: {lat: 34.019861, lng: -118.153169}},
+    {
+      title: 'AltaMed Medical Group - Commerce',
+      lat: 34.019861,
+      long: -118.153169
+    },
 
-        {title: 'AltaMed Medical and Dental Group - Boyle Heights', location: {lat: 34.024119, lng: -118.187775}},
+    {
+      title: 'AltaMed Medical and Dental Group - Boyle Heights',
+      lat: 34.024119,
+      long: -118.187775
+    },
 
-        {title: 'AltaMed Youth and Senior Care Management – Indiana', location: {lat: 34.029989, lng: -118.192030}},
+    {
+      title: 'AltaMed Youth and Senior Care Management – Indiana',
+      lat: 34.029985,
+      long: -118.191983
+    },
 
-        {title: 'AltaMed Medical Group - Estrada Courts', location: {lat: 34.020796, lng: -118.208344}},
+    {
+      title: 'AltaMed Medical Group - Estrada Courts',
+      lat: 34.020796,
+      long: -118.208344
+    },
 
-        {title: 'AltaMed Medical Group - Montebello', location: {lat: 34.013085, lng: -118.125732}}
+    {
+      title: 'AltaMed Medical Group - Montebello',
+      lat: 34.013085,
+      long: -118.125732
+    }
 
-    ];
+  ];
 
       //Initiates map
       function initMap() {
@@ -170,7 +190,7 @@ var EastLA = {lat: 34.0224, lng: -118.1670};
       }
 
 //knockout viewmodel
-var ViewModel = function() {
+var ViewModel = function(data) {
     var self = this;
 
     self.markers = [];
@@ -179,8 +199,7 @@ var ViewModel = function() {
 
     self.loclist = ko.observable('');
 
-    self.yahoo = ko.observable()
-
+    self.yahoo = ko.observable();
 
 
     //infowindow
@@ -196,49 +215,27 @@ var ViewModel = function() {
       $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='la, ca') &format=json", function(data){
 
    self.yahoo("Temperature in Los Angeles "+data.query.results.channel.item.condition.temp + "°F");
-  });
-      //NyTimes Api
-      function loadData() {
-
-    var $nytElem = $('#nytimes-articles');
-    var $nytHeaderElem = $('#nytimes-header');
-
-    // clear out old data before new request
-    $nytElem.text("");
-
-    //NYTimes Ajax request
-    var nytimesUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=Los Angeles&sort=newest&api-key=3aab32b91721433782d30c05b223597d';
-
-    // load nytimes
-    $.getJSON(nytimesUrl, function(data){
-
-      $nytHeaderElem.text('New York Times articles about LA');
-
-        articles = data.response.docs;
-        for (var i = 0; i < articles.length; i++) {
-          if (i === 2) { break; }
-            var article = articles[i];
-            $nytElem.append('<li class ="article">'+
-                '<a href="'+article.web_url+'">'+article.headline.main+
-                    '</a>'+
-                '<p>' + article.snippet + '</p>'+
-            '</li>');
-        }
-    }).fail(function(e){
-        $nytHeaderElem.text('New York Times Articles could Not Be Loaded');
+  }).fail(function(e){
+        self.yahoo('Yahoo weather could Not Be Loaded');
     });
-  }
-  $('#nytimes-articles').html(loadData);
+
 
       // The following group uses the location array to create an array of markers on initialize.
         for (var i = 0; i < locations.length; i++){
           var position = locations[i].location;
           var title = locations[i].title;
+          self.markerLat = locations[i].lat;
+          self.markerLong = locations[i].long;
           // Create a marker per location, and put into markers array.
           var marker = new google.maps.Marker({
             map: map,
-            position: position,
+            position: {
+                    lat: self.markerLat,
+                    lng: self.markerLong
+                },
             title: title,
+            lat: self.markerLat,
+            long: self.markerLong,
             infowindow: largeInfowindow,
             icon: defaultIcon,
             animation: google.maps.Animation.DROP,
@@ -298,40 +295,39 @@ var ViewModel = function() {
         if (infowindow.marker != marker) {
           infowindow.setContent('<div>' + marker.title + '</div>');
           infowindow.marker = marker;
+
+          self.title = marker.title;
+
+          //Foursquare client id and secret
+          FsquareclientID = "2OOTX5QZRKRE0MDHRHOM00T5OUPFIBU1NQ3OIZUG43KH44A2";
+
+          FsquareclientSecret = "VBJUXX4OGMS34J4TD1NBK3JTKXKDDINWMQBRRXEGUXAPTNXZ"
+
+          // Foursquare request using search for venues
+            var foursquarereq = 'https://api.foursquare.com/v2/venues/search?ll=' + marker.lat + ',' + marker.long + '&client_id=' + FsquareclientID + '&client_secret=' + FsquareclientSecret + '&v=20170708';
+            // Pulled Json info
+            $.getJSON(foursquarereq).done(function(marker) {
+                var request = marker.response.venues[0];
+                self.street = request.location.formattedAddress[0];
+                self.city = request.location.formattedAddress[1];
+
+                self.foursquareinfotext =
+                    '<div class="infowindowtext"><h5 class="altatitle">'+ self.title + "</h5>" +
+                    '<div class="altainfo">' + self.city + "</div></div>";
+
+
+                infowindow.setContent(self.foursquareinfotext);
+            }).fail(function() {
+                alert("Foursquare API could Not Be Loaded.Please refresh page or try again later.");
+            });
+
           //Bounce marker
           infowindow.marker.setAnimation(google.maps.Animation.BOUNCE);
           // Make sure the marker property is cleared if the infowindow is closed.
           infowindow.addListener('closeclick',function(){
             infowindow.setMarker = null;
           });
-          var streetViewService = new google.maps.StreetViewService();
-          var radius = 50;
-          // In case the status is OK, which means the pano was found, compute the
-          // position of the streetview image, then calculate the heading, then get a
-          // panorama from that and set the options
-          function getStreetView(data, status) {
-            if (status == google.maps.StreetViewStatus.OK) {
-              var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                var panoramaOptions = {
-                  position: nearStreetViewLocation,
-                  pov: {
-                    heading: heading,
-                    pitch: 30
-                  }
-                };
-              var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), panoramaOptions);
-            } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div>');
-            }
-          }
-          // Use streetview service to get the closest streetview image within
-          // 50 meters of the markers position
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
           // Open the infowindow on the correct marker.
           infowindow.open(map, marker);
         }
