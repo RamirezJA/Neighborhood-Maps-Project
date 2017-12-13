@@ -313,6 +313,7 @@ var ViewModel = function(data) {
 
                 self.foursquareinfotext =
                     '<div class="infowindowtext"><h5 class="altatitle">'+ self.title + "</h5>" +
+                    '<div class="altainfo">' + self.street + "</div>" +
                     '<div class="altainfo">' + self.city + "</div></div>";
 
 
