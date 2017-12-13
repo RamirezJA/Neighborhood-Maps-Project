@@ -6,11 +6,23 @@
 
 #map {
   left: 0px;
-  top: 0px;
+  top: 67px;
   bottom: 0px;
   right: 0px;
   z-index: -2;
   position: absolute;
+}
+@media only screen and (max-width: 645px) {
+#map {
+  left: 0px;
+  top: 95px;
+  bottom: 0px;
+  right: 0px;
+  z-index: -2;
+  position: absolute;
+}
+
+
 }
 
 #pano {
@@ -54,7 +66,7 @@
   height:50px;
   width:250px;
   right: 15px;
-  top: 90px;
+  top: 105px;
   position: absolute;
 	}
 }
