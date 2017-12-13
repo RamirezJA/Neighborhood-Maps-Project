@@ -23,7 +23,7 @@
   border: 1px solid black ;
   height:50px;
   width:250px;
-	top: 125px;
+	top: 175px;
   position: absolute;
   background: rgba(255,255,255,0.7);
 	}
@@ -45,7 +45,7 @@
 #p1{
   height:50px;
   width:250px;
-  bottom: 265px;
+  bottom: 200px;
   position: absolute;
 	}
 }
