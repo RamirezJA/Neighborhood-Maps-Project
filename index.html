@@ -23,7 +23,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <h1 class="navbar-name">Altamed Clinics Map</h1>
+      <!--Foursquare attribution-->
+      <h1 class="navbar-name">Altamed Clinics Map<span><a href="https://foursquare.com/"><img src="img/Powered-by-Foursquare-full-color-300.png" alt="Foursquare"></a></span></h1>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
 
@@ -58,29 +59,15 @@
       </div>
     </div>
   </div>
-<!-- NYT button and panel -->
-  <div class="panel-group" id="p2">
-  <div class="panel panel-default">
-  <div class="nytimes-container">
-    <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">NYT articles of LA</button>
-
-        <div id="demo" class="panel-collapse collapse">
-          <h3 id="nytimes-header">New York Times Articles</h3>
-        <ul id="nytimes-articles" class="article-list"></ul>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Google Map -->
 <div class="container-fluid">
   <div class="row">
-    <div id="map">
-     </div>
+    <div id="map"></div>
    </div>
  </div>
 
-<!-- yahoo weather api -->
+<!-- yahoo weather api using knockoutjs html-bind -->
 <div class="container">
   <div class="row">
     <div class="col-sm-3" id="boxed">
@@ -89,13 +76,7 @@
     </div>
   </div>
 </div>
-<!-- attributions -->
-<footer class="footer">
-  <div class="container">
-    <a onerror="weatherNotFound()" href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/white.png" alt="yahoo" width="134" height="29"/> </a>
-    <a href="http://developer.nytimes.com" > <img src="img/poweredby_nytimes_200c.png" alt="New York Times"></a>
-  </div>
-</footer>
+
 
  <!-- Knockout.js -->
  <script src='js/knockout-3.4.2.js'></script>
